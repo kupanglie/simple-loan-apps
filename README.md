@@ -1,5 +1,5 @@
 # simple-loan-apps
----
+
 # Setup your machine - Linux
 1. Install golang - `https://go.dev/doc/install`
 2. Install mysql - `https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04`
