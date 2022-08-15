@@ -132,7 +132,7 @@ func (l *loan) GenerateLoanDocument(ctx context.Context, loanId int) error {
 		return err
 	}
 
-	csvFile, err := os.Create(fmt.Sprintf("%s/data-%d.csv", os.DirFS(fmt.Sprintf(homePath)), loanId))
+	csvFile, err := os.Create(fmt.Sprintf("%s/data-%d.csv", os.DirFS(fmt.Sprint(homePath)), loanId))
 	if err != nil {
 		log.Println("[LOAN][SVC][GenerateLoanDocument][Create] - ", err)
 		return err
