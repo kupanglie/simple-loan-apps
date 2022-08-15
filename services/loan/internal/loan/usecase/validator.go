@@ -18,16 +18,19 @@ func validateIdentityNumber(ctx context.Context, sex string, dateOfBirth string,
 	dateOfBirthParsed, err := time.Parse("02-01-2006", dateOfBirth)
 	if err != nil {
 		log.Println("[LOAN][UC][validateIdentityNumber][Parse] - ", err)
+
 		return false
 	}
 
 	if sex == constant.MALE {
 		return strings.Join(strings.Split(identityNumber, "")[6:12], "") == dateOfBirthParsed.Format("020106")
-	} else {
+	} else if sex == constant.FEMALE {
 		date, _ := strconv.Atoi(dateOfBirthParsed.Format("02"))
 
 		return strings.Join(strings.Split(identityNumber, "")[6:12], "") == strings.Join([]string{strconv.Itoa(date + 40), dateOfBirthParsed.Format("0106")}, "")
 	}
+
+	return false
 }
 
 func validateAmount(ctx context.Context, amount int) bool {
