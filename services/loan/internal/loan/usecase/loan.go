@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -28,7 +28,7 @@ func NewLoanUC(loanSvc service.Loan) *loan {
 func (l *loan) Add(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
-	reqBody, _ := ioutil.ReadAll(r.Body)
+	reqBody, _ := io.ReadAll(r.Body)
 	request := entity.CreateLoanRequest{}
 	json.Unmarshal(reqBody, &request)
 
@@ -57,7 +57,6 @@ func (l *loan) Add(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(helper.ResponseGenerator(response, 0))
-	return
 }
 
 func (l *loan) FindById(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +78,6 @@ func (l *loan) FindById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(helper.ResponseGenerator(response, 0))
-	return
 }
 
 func (l *loan) FindByIdentityNumber(w http.ResponseWriter, r *http.Request) {
@@ -96,5 +94,4 @@ func (l *loan) FindByIdentityNumber(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(helper.ResponseGenerator(response, 0))
-	return
 }
