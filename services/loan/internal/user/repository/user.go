@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log"
 
 	"github.com/kupanglie/simple-go-app/service/user/helper"
@@ -30,12 +31,12 @@ func (u *user) Add(ctx context.Context, tx *sql.Tx, request entity.User) (*sql.T
 		return tx, 0, err
 	}
 
-	lastInsertedId, err := result.LastInsertId()
-	if err != nil {
+	lastInsertedId, _ := result.LastInsertId()
+	if lastInsertedId == 0 {
 		tx.Rollback()
 
-		log.Println("[USER][RP][Add][LastInsertId] - ", err)
-		return tx, 0, err
+		log.Println("[USER][RP][Add][LastInsertId] - Last inserted id is 0")
+		return tx, 0, errors.New("last inserted id is 0")
 	}
 
 	return tx, lastInsertedId, nil
@@ -61,7 +62,7 @@ func (u *user) FindById(ctx context.Context, id int) (entity.User, error) {
 			return user, err
 		}
 
-		user.DateOfBirth = helper.CastSQLTimeToTime(dateOfBirth.String)
+		user.DateOfBirth = helper.CastSQLTimeToDate(dateOfBirth.String)
 		user.CreatedAt = helper.CastSQLTimeToTime(createdAt.String)
 		user.UpdatedAt = helper.CastSQLTimeToTime(updatedAt.String)
 		user.DeletedAt = helper.CastSQLTimeToTime(deletedAt.String)
@@ -90,7 +91,7 @@ func (u *user) FindByIdentityNumber(ctx context.Context, identityNumber string) 
 			return user, err
 		}
 
-		user.DateOfBirth = helper.CastSQLTimeToTime(dateOfBirth.String)
+		user.DateOfBirth = helper.CastSQLTimeToDate(dateOfBirth.String)
 		user.CreatedAt = helper.CastSQLTimeToTime(createdAt.String)
 		user.UpdatedAt = helper.CastSQLTimeToTime(updatedAt.String)
 		user.DeletedAt = helper.CastSQLTimeToTime(deletedAt.String)

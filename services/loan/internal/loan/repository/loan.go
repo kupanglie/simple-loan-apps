@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log"
 
 	"github.com/kupanglie/simple-loan-apps/services/loan/internal/helper"
@@ -29,13 +30,14 @@ func (l *loan) Add(ctx context.Context, tx *sql.Tx, request entity.Loan) (*sql.T
 		return tx, 0, err
 	}
 
-	lastInsertedId, err := response.LastInsertId()
-	if err != nil {
+	lastInsertedId, _ := response.LastInsertId()
+	if lastInsertedId == 0 {
 		tx.Rollback()
 
-		log.Println("[LOAN][RP][Add][LastInsertId] - ", err)
-		return tx, 0, err
+		log.Println("[LOAN][RP][Add][LastInsertId] - Last inserted id is 0")
+		return tx, 0, errors.New("last inserted id is 0")
 	}
+
 	return tx, int(lastInsertedId), nil
 }
 
@@ -46,6 +48,7 @@ func (l *loan) FindById(ctx context.Context, id int) (entity.Loan, error) {
 	rows, err := l.db.QueryContext(ctx, query, id)
 	if err != nil {
 		log.Println("[LOAN][RP][FindById][QueryContext] - ", err)
+
 		return loan, err
 	}
 
